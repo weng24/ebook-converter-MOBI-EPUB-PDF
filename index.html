@@ -172,11 +172,6 @@
             convertBtn.disabled = true;
             statusMessage.textContent = 'Conversion in progress...';
 
-            // This is a placeholder for the actual conversion logic.
-            // In a real Android app, you would send this file to a backend server or
-            // use a client-side library to perform the conversion.
-            // The process would be asynchronous.
-
             // Simulate an API call
             await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -189,7 +184,41 @@
             const outputFormat = document.getElementById('format-select').value;
             const originalName = selectedFile.name.split('.').slice(0, -1).join('.');
             const newFileName = `${originalName}.${outputFormat}`;
-            showModal('Success!', `Your file has been "converted" to a ${outputFormat} format. Download "${newFileName}"`);
+
+            // Determine the MIME type based on the selected output format
+            let mimeType = 'text/plain';
+            switch (outputFormat) {
+                case 'epub':
+                    mimeType = 'application/epub+zip';
+                    break;
+                case 'mobi':
+                    mimeType = 'application/x-mobipocket-ebook';
+                    break;
+                case 'pdf':
+                    mimeType = 'application/pdf';
+                    break;
+            }
+
+            // Create a blob with the correct MIME type to simulate the converted file.
+            // NOTE: This is a simulation. A real conversion would require a server-side
+            // process or a complex client-side library.
+            const blob = new Blob([`This is the content of the converted file from ${selectedFile.name}`], { type: mimeType });
+
+            // Create an object URL for the blob
+            const url = URL.createObjectURL(blob);
+
+            // Create a temporary link element and trigger a download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = newFileName;
+            document.body.appendChild(a);
+            a.click();
+
+            // Clean up the temporary URL and link element
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showModal('Success!', `Your file has been "converted" and downloaded as "${newFileName}".`);
         }
     </script>
 </body>
