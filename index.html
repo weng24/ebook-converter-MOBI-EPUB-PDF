@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ebook Converter</title>
+    <title>Ebook to PDF Converter</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,8 +19,8 @@
 
     <div id="app" class="w-full max-w-lg bg-white rounded-xl shadow-2xl p-8 space-y-6">
         <div class="text-center">
-            <h1 class="text-3xl font-bold text-gray-800">Ebook Converter</h1>
-            <p class="text-gray-500 mt-2">Convert your favorite books to a new format.</p>
+            <h1 class="text-3xl font-bold text-gray-800">Ebook to PDF Converter</h1>
+            <p class="text-gray-500 mt-2">Convert your favorite ebooks to PDF format.</p>
         </div>
 
         <!-- File Input Section -->
@@ -44,20 +44,10 @@
             </div>
         </div>
 
-        <!-- Conversion Options -->
-        <div class="space-y-4">
-            <label for="format-select" class="block text-sm font-medium text-gray-700">Choose Output Format</label>
-            <select id="format-select" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                <option value="epub">EPUB</option>
-                <option value="mobi">MOBI</option>
-                <option value="pdf">PDF</option>
-            </select>
-        </div>
-
         <!-- Convert Button and Status -->
         <div class="space-y-4">
             <button id="convert-btn" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200" disabled>
-                <span id="button-text">Convert</span>
+                <span id="button-text">Convert to PDF</span>
                 <svg id="loading-spinner" class="animate-spin h-5 w-5 text-white ml-2 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -176,32 +166,21 @@
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             // Restore button state
-            buttonText.textContent = 'Convert';
+            buttonText.textContent = 'Convert to PDF';
             loadingSpinner.classList.add('hidden');
             convertBtn.disabled = false;
             
             statusMessage.textContent = 'Conversion complete!';
-            const outputFormat = document.getElementById('format-select').value;
+            
+            // Hardcode the output format to PDF
+            const outputFormat = 'pdf';
             const originalName = selectedFile.name.split('.').slice(0, -1).join('.');
             const newFileName = `${originalName}.${outputFormat}`;
 
-            // Determine the MIME type based on the selected output format
-            let mimeType = 'text/plain';
-            switch (outputFormat) {
-                case 'epub':
-                    mimeType = 'application/epub+zip';
-                    break;
-                case 'mobi':
-                    mimeType = 'application/x-mobipocket-ebook';
-                    break;
-                case 'pdf':
-                    mimeType = 'application/pdf';
-                    break;
-            }
+            // Set the MIME type specifically for PDF
+            const mimeType = 'application/pdf';
 
             // Create a blob with the correct MIME type to simulate the converted file.
-            // NOTE: This is a simulation. A real conversion would require a server-side
-            // process or a complex client-side library.
             const blob = new Blob([`This is the content of the converted file from ${selectedFile.name}`], { type: mimeType });
 
             // Create an object URL for the blob
